@@ -1,0 +1,62 @@
+<header>
+            <div class="topheader">
+                <div class="container">
+                    <div class="header-content flex-div">
+                        <button class="burger-menu" onclick="openNav()" >
+                            <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 5v1.5h14V5H5zm0 7.8h14v-1.5H5v1.5zM5 19h14v-1.5H5V19z"></path></svg>
+                        </button>
+                          <a href="/"><img src="{{ 'Group 176.png' | asset_url }}" class="site-logo" /></a>
+                        <div class="header-site-info flex-div">
+                            <form class="headersearchbar" action="/search" method="get">
+                                <input type="text" id="headersearchbar" name="q" value="{{ search.terms | escape }}" placeholder="Search products..."/>
+                            </form>
+                            <a href="tel:1234567890" class="icon-link">
+                              <div class="headercontact flex-div" style="gap:20px;">
+                                <img src="{{ 'phone-call 1.png' | asset_url }}" class="phone-icon" />
+                                <div class="call-us-now">
+                                    <p>CALL US NOW</p>
+                                    <p class="contactno">+123-456-7890</p>
+                                </div>
+                            </div></a>
+                            <div class="header-icons flex-div" style="gap:20px;position:relative;">
+                                <a href="/account" class="icon-link"><img src="{{ 'user 1.png' | asset_url }}" class="account-icon" /></a>
+                                  <a href="/cart" class="icon-link">
+                                  <img src="{{ 'shopping-cart 1.png' | asset_url }}" class="cart-icon" />
+                                  <p id="cart-item-count" class="cart-item-count">{{ cart.item_count }}</p>
+                                  </a>
+                            </div>
+                        </div>
+                    </div>
+                    <form class="mobile-searchbar" action="/search" method="get">
+                        <input type="text" id="mobilesearchbar" name="q" value="{{ search.terms | escape }}" placeholder="Search products..."/>
+                    </form>
+                </div>
+            </div>
+            <div class="bottomheader">
+                <div class="container">
+                    <ul class="flex-div header-nav">
+                    {% for link in linklists.product-categories.links -%}
+                      {% assign link_class = '' %}
+                      {% if request.path == link.url %}
+                        {% assign link_class = 'active' %}
+                      {% endif %}
+                      <li>{{ link.title | link_to: link.url, class: link_class }}</li>
+                      <li class="nav-separator"><img src="{{ 'Rectangle 49 (3).png' | asset_url }}" /></li>
+                    {%- endfor %}
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <div id="mobile-nav" class="nav-overlay">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <ul class="nav-overlay-content">
+              {% for link in linklists.product-categories.links -%}
+                  {% assign link_class = '' %}
+                      {% if request.path == link.url %}
+                        {% assign link_class = 'active' %}
+                      {% endif %}
+                      <li>{{ link.title | link_to: link.url, class: link_class }}</li>
+              {%- endfor %}
+            </ul>
+        </div>
+    

@@ -1,0 +1,198 @@
+<div class="collection-banner flex-div">
+  <h1>ACCOUNT DETAILS</h1>
+</div>
+<div class="container cart-page" style="margin:60px auto 100px auto;position: relative;padding: 30px;max-width: 980px;border: 1px solid #dedede;">
+<div id="admin_header" style="padding-bottom:20px;border-bottom:1px solid #d3d3d3;display:flex;justify-content:space-between;align-items:baseline;">
+  <h2 class="title">Manage Account Address</h2>
+  <p id="logout" class="action_link"><a href="/account/" id="customer_logout_link">Return to Account Details</a></p>
+</div>
+<div class="account-details flex-div" style="justify-content:start;align-items:start;gap:60px;margin-top:10px;">
+<div id="address_tables">  
+  {% if customer.addresses_count == 0 %}
+       <h4 style="margin-top:30px;">No Addresses Yet.</h4>
+  {% endif %}
+  
+{% paginate customer.addresses by 10 %}
+  {% for address in customer.addresses %}
+  <div class="address_table">
+    <div id="view_address_{{address.id}}" class="customer_address">
+      <h4 class="address_title">
+        {{ address.street }} 
+        {% if address == customer.default_address %}<span class="default_address note">(Default Address)</span>{% endif %}
+      </h4>
+        <form id="address-delete-form" method="post" action="/account/addresses/{{ address.id }} " onsubmit="ConfirmAddressDelete();">
+          <p class="address_actions">
+          <span class="action_link action_edit"><a onclick="EditAddressInfo({{ address.id }});">Edit</a></span> <span style="color:#505050;">|</span>
+          <input type="hidden" name="_method" value="delete">
+          <button type="submit" class="action_link action_delete" >Delete</button>
+          </p>
+        </form>
+      <div class="view_address">
+        <p style="margin-bottom:4px;"><b>{{ address.first_name }} {{address.last_name }}</b></p>
+        <p>{{ address.company }}</p>
+        <p>{{ address.street }}</p>
+        <p>{{ address.city }}, {{ address.province }}</p>
+        <p>{{ address.country }} {{ address.zip }}</p>
+        <p>{{ address.phone }}</p>
+      </div>
+    </div>    
+    
+  </div><!-- end .address_table -->
+
+    <div id="edit_address_{{ address.id }}" class="customer_address edit_address" style="display:none;">
+    {% form 'customer_address', address %}
+       <h4 id="add_address_title">Edit Address Info </h4>
+      <div class="clearfix large_form">
+	    <label for="address_first_name_{{form.id}}">First Name</label>
+	    <input type="text" id="address_first_name_{{form.id}}" class="address_form" name="address[first_name]" value="{{form.first_name}}" size="40" required/>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="address_last_name_{{form.id}}">Last Name</label>
+	   <input type="text" id="address_last_name_{{form.id}}" class="address_form" name="address[last_name]" value="{{form.last_name}}" size="40" required/>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="address_company_{{form.id}}">Company</label>
+	    <input type="text" id="address_company_{{form.id}}" class="address_form" name="address[company]" value="{{form.company}}" size="40" required/>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="first_name" class="login">Address 1</label>
+	    <input type="text" id="address_address1_{{form.id}}" class="address_form" name="address[address1]" value="{{form.address1}}" size="40" required/>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="address_address2_{{form.id}}">Address2</label>
+	    <input type="text" id="address_address2_{{form.id}}" class="address_form" name="address[address2]" value="{{form.address2}}" size="40" required/>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="address_city_{{form.id}}">City</label>
+	    <input type="text" id="address_city_{{form.id}}" class="address_form" name="address[city]" value="{{form.city}}" size="40" required/>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="address_country_{{form.id}}">Country/Region</label>
+	     <select id="address_country_new" name="address[country]" data-default="{{form.country}}"><option>Philippines</option></select>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="first_name" class="login">Province</label>
+	    <select id="address_province_{{form.id}}" class="address_form province-select" name="address[province]" data-default="{{form.province}}"><option value="{{ form.province }}" selected disabled hidden>{{ form.province }}</option><option value="Abra">Abra</option><option value="Agusan del Norte">Agusan del Norte</option><option value="Agusan del Sur">Agusan del Sur</option><option value="Aklan">Aklan</option><option value="Albay">Albay</option><option value="Antique">Antique</option><option value="Apayao">Apayao</option><option value="Aurora">Aurora</option><option value="Basilan">Basilan</option><option value="Bataan">Bataan</option><option value="Batanes">Batanes</option><option value="Batangas">Batangas</option><option value="Benguet">Benguet</option><option value="Biliran">Biliran</option><option value="Bohol">Bohol</option><option value="Bukidnon">Bukidnon</option><option value="Bulacan">Bulacan</option><option value="Cagayan">Cagayan</option><option value="Camarines Norte">Camarines Norte</option><option value="Camarines Sur">Camarines Sur</option><option value="Camiguin">Camiguin</option><option value="Capiz">Capiz</option><option value="Catanduanes">Catanduanes</option><option value="Cavite">Cavite</option><option value="Cebu">Cebu</option><option value="Cotabato">Cotabato</option><option value="Davao Occidental">Davao Occidental</option><option value="Davao Oriental">Davao Oriental</option><option value="Davao de Oro">Compostela Valley</option><option value="Davao del Norte">Davao del Norte</option><option value="Davao del Sur">Davao del Sur</option><option value="Dinagat Islands">Dinagat Islands</option><option value="Eastern Samar">Eastern Samar</option><option value="Guimaras">Guimaras</option><option value="Ifugao">Ifugao</option><option value="Ilocos Norte">Ilocos Norte</option><option value="Ilocos Sur">Ilocos Sur</option><option value="Iloilo">Iloilo</option><option value="Isabela">Isabela</option><option value="Kalinga">Kalinga</option><option value="La Union">La Union</option><option value="Laguna">Laguna</option><option value="Lanao del Norte">Lanao del Norte</option><option value="Lanao del Sur">Lanao del Sur</option><option value="Leyte">Leyte</option><option value="Maguindanao">Maguindanao</option><option value="Marinduque">Marinduque</option><option value="Masbate">Masbate</option><option value="Metro Manila">Metro Manila</option><option value="Misamis Occidental">Misamis Occidental</option><option value="Misamis Oriental">Misamis Oriental</option><option value="Mountain Province">Mountain</option><option value="Negros Occidental">Negros Occidental</option><option value="Negros Oriental">Negros Oriental</option><option value="Northern Samar">Northern Samar</option><option value="Nueva Ecija">Nueva Ecija</option><option value="Nueva Vizcaya">Nueva Vizcaya</option><option value="Occidental Mindoro">Occidental Mindoro</option><option value="Oriental Mindoro">Oriental Mindoro</option><option value="Palawan">Palawan</option><option value="Pampanga">Pampanga</option><option value="Pangasinan">Pangasinan</option><option value="Quezon">Quezon</option><option value="Quirino">Quirino</option><option value="Rizal">Rizal</option><option value="Romblon">Romblon</option><option value="Samar">Samar</option><option value="Sarangani">Sarangani</option><option value="Siquijor">Siquijor</option><option value="Sorsogon">Sorsogon</option><option value="South Cotabato">South Cotabato</option><option value="Southern Leyte">Southern Leyte</option><option value="Sultan Kudarat">Sultan Kudarat</option><option value="Sulu">Sulu</option><option value="Surigao del Norte">Surigao del Norte</option><option value="Surigao del Sur">Surigao del Sur</option><option value="Tarlac">Tarlac</option><option value="Tawi-Tawi">Tawi-Tawi</option><option value="Zambales">Zambales</option><option value="Zamboanga Sibugay">Zamboanga Sibugay</option><option value="Zamboanga del Norte">Zamboanga del Norte</option><option value="Zamboanga del Sur">Zamboanga del Sur</option></select>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="address_zip_{{form.id}}">Zip</label>
+	    <input type="number" id="address_zip_{{form.id}}" class="address_form" name="address[zip]" value="{{form.zip}}" size="40" required/>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="address_phone_{{form.id}}">Phone</label>
+	    <input type="text" id="address_phone_{{form.id}}" class="address_form" name="address[phone]" value="{{form.phone}}" size="40" required/>
+	  </div>
+      <div class="clearfix large_form" style="display: flex;align-items: center;">
+	    Set as Default Address? {{ form.set_as_default_checkbox }} 
+	  </div>
+      <div class="action_bottom">
+      <input class="btn" type="submit" value="Update Address" />
+      <span class="note"> or <a href="#add_address" onclick="CancelEditAddress({{ address.id }});">Cancel</a></span>
+    </div>  
+      {% endform %}
+    </div>
+    
+  {% endfor %}
+  
+  <div id="address_pagination">{{ paginate | default_pagination }}</div>  
+{% endpaginate %}
+</div>
+<div class="address-form">
+  <div id="add_address" class="customer_address edit_address">
+  {% form 'customer_address', customer.new_address %}
+    <h4 id="add_address_title">Add new address</h4>
+      <div class="clearfix large_form">
+	    <label for="first_name" class="login">First Name</label>
+	    <input type="text" id="address_first_name_new" class="address_form" name="address[first_name]" value="{{form.first_name}}" size="40" required/>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="first_name" class="login">Last Name</label>
+	    <input type="text" id="address_last_name_new" class="address_form" name="address[last_name]" value="{{form.last_name}}" size="40" required/>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="first_name" class="login">Company</label>
+	    <input type="text" for="address_company_new" class="address_form" name="address[company]" value="{{form.company}}" size="40" required/>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="first_name" class="login">Address 1</label>
+	    <input type="text" id="address_address1_new" class="address_form" name="address[address1]" value="{{form.address1}}" size="40" required/>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="first_name" class="login">Address 2</label>
+	    <input type="text" id="address_address2_new" class="address_form" name="address[address2]" value="{{form.address1}}" size="40" required/>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="first_name" class="login">City</label>
+	    <input type="text" id="address_city_new" class="address_form" name="address[city]" value="{{form.city}}" size="40" required/>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="first_name" class="login">Country/Region</label>
+	     <select id="address_country_new" name="address[country]" data-default="{{form.country}}"><option>Philippines</option></select>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="first_name" class="login">Province</label>
+	    <select id="address_province_new" class="address_form form-control" name="address[province]"><option value="Abra">Abra</option><option value="Agusan del Norte">Agusan del Norte</option><option value="Agusan del Sur">Agusan del Sur</option><option value="Aklan">Aklan</option><option value="Albay">Albay</option><option value="Antique">Antique</option><option value="Apayao">Apayao</option><option value="Aurora">Aurora</option><option value="Basilan">Basilan</option><option value="Bataan">Bataan</option><option value="Batanes">Batanes</option><option value="Batangas">Batangas</option><option value="Benguet">Benguet</option><option value="Biliran">Biliran</option><option value="Bohol">Bohol</option><option value="Bukidnon">Bukidnon</option><option value="Bulacan">Bulacan</option><option value="Cagayan">Cagayan</option><option value="Camarines Norte">Camarines Norte</option><option value="Camarines Sur">Camarines Sur</option><option value="Camiguin">Camiguin</option><option value="Capiz">Capiz</option><option value="Catanduanes">Catanduanes</option><option value="Cavite">Cavite</option><option value="Cebu">Cebu</option><option value="Cotabato">Cotabato</option><option value="Davao Occidental">Davao Occidental</option><option value="Davao Oriental">Davao Oriental</option><option value="Davao de Oro">Compostela Valley</option><option value="Davao del Norte">Davao del Norte</option><option value="Davao del Sur">Davao del Sur</option><option value="Dinagat Islands">Dinagat Islands</option><option value="Eastern Samar">Eastern Samar</option><option value="Guimaras">Guimaras</option><option value="Ifugao">Ifugao</option><option value="Ilocos Norte">Ilocos Norte</option><option value="Ilocos Sur">Ilocos Sur</option><option value="Iloilo">Iloilo</option><option value="Isabela">Isabela</option><option value="Kalinga">Kalinga</option><option value="La Union">La Union</option><option value="Laguna">Laguna</option><option value="Lanao del Norte">Lanao del Norte</option><option value="Lanao del Sur">Lanao del Sur</option><option value="Leyte">Leyte</option><option value="Maguindanao">Maguindanao</option><option value="Marinduque">Marinduque</option><option value="Masbate">Masbate</option><option value="Metro Manila">Metro Manila</option><option value="Misamis Occidental">Misamis Occidental</option><option value="Misamis Oriental">Misamis Oriental</option><option value="Mountain Province">Mountain</option><option value="Negros Occidental">Negros Occidental</option><option value="Negros Oriental">Negros Oriental</option><option value="Northern Samar">Northern Samar</option><option value="Nueva Ecija">Nueva Ecija</option><option value="Nueva Vizcaya">Nueva Vizcaya</option><option value="Occidental Mindoro">Occidental Mindoro</option><option value="Oriental Mindoro">Oriental Mindoro</option><option value="Palawan">Palawan</option><option value="Pampanga">Pampanga</option><option value="Pangasinan">Pangasinan</option><option value="Quezon">Quezon</option><option value="Quirino">Quirino</option><option value="Rizal">Rizal</option><option value="Romblon">Romblon</option><option value="Samar">Samar</option><option value="Sarangani">Sarangani</option><option value="Siquijor">Siquijor</option><option value="Sorsogon">Sorsogon</option><option value="South Cotabato">South Cotabato</option><option value="Southern Leyte">Southern Leyte</option><option value="Sultan Kudarat">Sultan Kudarat</option><option value="Sulu">Sulu</option><option value="Surigao del Norte">Surigao del Norte</option><option value="Surigao del Sur">Surigao del Sur</option><option value="Tarlac">Tarlac</option><option value="Tawi-Tawi">Tawi-Tawi</option><option value="Zambales">Zambales</option><option value="Zamboanga Sibugay">Zamboanga Sibugay</option><option value="Zamboanga del Norte">Zamboanga del Norte</option><option value="Zamboanga del Sur">Zamboanga del Sur</option></select>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="first_name" class="login">Zip</label>
+	    <input type="number" id="address_zip_new" class="address_form" name="address[zip]" value="{{form.zip}}" size="5" required/>
+	  </div>
+      <div class="clearfix large_form">
+	    <label for="first_name" class="login">Phone</label>
+	    <input type="number" id="address_phone_new" class="address_form" name="address[phone]" value="{{form.phone}}" size="40" required/>
+	  </div>
+      <div class="clearfix large_form" style="display: flex;align-items: center;">
+	    Set as Default Address? {{ form.set_as_default_checkbox }}
+	  </div>
+      <div class="action_bottom">
+      <input class="btn" type="submit" value="Add Address" />
+      <span class="note" style="display:none;"> or <a href="#" onclick="Shopify.CustomerAddress.toggleNewForm(); return false;">Cancel</a></span>
+    </div>
+    
+  {% endform %}
+</div>
+
+</div>
+  
+  
+</div>
+
+<!-- end #address_tables -->
+</div>
+{% render 'newsletter' %}
+<script type="text/javascript" charset="utf-8">
+  // initialize observers on address selectors
+  new Shopify.CountryProvinceSelector('address_country_new', 'address_province_new', {hideElement: 'address_province_container_new'});  
+  {% for address in customer.addresses %}
+    new Shopify.CountryProvinceSelector('address_country_{{address.id}}', 'address_province_{{address.id}}', {hideElement: 'address_province_container_{{address.id}}'});
+  {% endfor %}
+
+  function ConfirmAddressDelete(){
+    var confirmation = confirm("Are you sure you want to delete this address?");
+    if (!confirmation) {
+      event.preventDefault(); // Prevent form submission if Cancel is clicked
+    }
+  }
+
+  function EditAddressInfo(id){
+    
+    const addresses = document.querySelectorAll('.address_table');
+    addresses.forEach((address) =>{
+      address.style.display = 'none';
+    });
+    document.getElementById("add_address").style.display = 'none';
+    document.getElementById("edit_address_"+id).style.display = 'block';
+  }
+  
+  function CancelEditAddress(id){
+    document.getElementById("edit_address_"+id).style.display = 'none';
+    
+    const addresses = document.querySelectorAll('.address_table');
+    addresses.forEach((address) =>{
+      address.style.display = 'block';
+    });
+    document.getElementById("add_address").style.display = 'block';
+    
+  }
+  
+</script>

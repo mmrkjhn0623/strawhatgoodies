@@ -1,0 +1,65 @@
+<div class="collection-banner flex-div">
+  <h1>BLOGS</h1>
+</div>
+<div class="container flex-div blog-page">
+<ul class="bloglist">
+  {% paginate blog.articles by 4 %}
+  {%- for article in blog.articles -%}
+    <li>
+      <div class="blog-wrapper">
+        <h2 class="blog-title">
+          <a href="{{ article.url }}">
+          {{ article.title }}
+          </a>
+        </h2>
+        <div class="flex-div" style="align-items:start;justify-content: start;gap:30px;">
+        <div class="blog-featuredimg">
+          <a href="{{ article.url }}">
+          {%- if article.image -%}
+            <img src="{{ article.image | img_url: 'original' }}" alt="">
+          {%- endif -%}
+        </a>
+        </div>
+        <div class="blog-except">
+          <p style="margin-bottom:40px;">
+            {%- if article.excerpt.size > 0 -%}
+              {{ article.excerpt }}
+            {%- else -%}
+              {{ article.content | strip_html | truncate: 500 }}
+            {%- endif -%}
+          </p>
+           <a href="{{ article.url }}" class="blog-readmore">
+            READ MORE
+          </a>
+        </div>
+        </div>
+      </div>
+    </li>
+  {%- endfor -%}
+  <div class="prod-pagination flex-div">
+    {{ paginate | default_pagination }}
+  </div>
+  {% endpaginate %}
+</ul>
+<div class="recent-articles">
+  <h2>Recent Articles</h2>
+  {% paginate blog.articles by 2 %}
+  {%- for article in blog.articles -%}
+     <div class="blog-featuredimg">
+          <a href="{{ article.url }}">
+          {%- if article.image -%}
+            <img src="{{ article.image | img_url: 'original' }}" alt="">
+          {%- endif -%}
+        </a>
+    </div>
+    <p class="blog-title">
+          <a href="{{ article.url }}">
+          {{ article.title }}
+          </a>
+    </p>
+  
+  {% endfor %}
+  {% endpaginate %}
+</div>
+</div>
+{% render 'newsletter' %}

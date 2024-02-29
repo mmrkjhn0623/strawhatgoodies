@@ -1,0 +1,57 @@
+<div class="collection-banner flex-div">
+  <h1>CONTACT US</h1>
+</div>
+<div class="container contact-page" style="margin:60px auto 100px auto;position: relative;padding: 30px;max-width: 800px;border: 1px solid #dedede;box-shadow: #0000001a 0 4px 50px;">
+  <div class="account-details flex-div" style="justify-content:start;align-items:start;flex-direction:column;gap:30px;margin-top:10px;">
+    <div id="address_tables" style="width:100%;">  
+      <h2 style="margin-bottom:10px;">Do you have any question?</h2>
+      <p>Whether you’re inquiring for a product, having concerns with delivery, interested to open a corporate account with us, or just, you know, wanting to give us general feedback, you’re in the right place!</p>
+    </div>
+
+    <div class="address-form" style="width:100%;">
+      <div id="contact-us-form" class="customer_address edit_address" style="padding-top:0px;">
+      <div id="contact-submitted" class="contact-submitted">
+        <h3 style="color:#008000;margin-bottom:6px;">Message Successfully Sent.</h3>
+        <p>Thank you for sending us a message, We will reach out with you ASAP.<br/><a href="contact" style="color:cf2e2e;">Send new message</a></p>       
+      </div>
+      {% form 'contact' %}
+        {{ form.errors | default_errors }}
+      
+        <div class="first-name clearfix large_form">
+          <label for="first-name">First name</label>
+          <input type="text" name="contact[first_name]" id="first-name" required/>
+        </div>
+      
+        <div class="last-name clearfix large_form">
+          <label for="last-name">Last name</label>
+          <input type="text" name="contact[last_name]" id="last-name" required/>
+        </div>
+      
+        <div class="phone clearfix large_form">
+          <label for="phone">Phone</label>
+          <input type="tel" name="contact[phone]" id="phone" required/>
+        </div>
+      
+        <div class="email clearfix large_form">
+          <label for="email">Email</label>
+          <input type="email" name="contact[email]" id="email" required/>
+        </div>
+      
+        <div class="message clearfix large_form">
+          <label for="message">Message</label>
+          <textarea name="contact[body]" id="message" required></textarea>
+        </div>
+      
+        <div class="submit action_bottom" style="margin-top:30px;">
+          <input type="submit" class="btn" value="Send Message" />
+        </div>
+      {% endform %}
+      </div>
+      
+    </div>
+    
+    
+  </div>
+  
+</div>
+{% render 'newsletter' %}

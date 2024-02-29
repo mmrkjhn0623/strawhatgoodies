@@ -1,0 +1,112 @@
+<div class="container">
+  <div class="flex-div prod-details-cont">
+    <div class="prod-image-section">
+      <img id="prod-image-cont" src="{{ product.featured_image | image_url }}" />
+      <div class="single-prod-images">
+        {% for image in product.images %}
+        <img src="{{ image.src | img_url: 'original' }}" alt="{{ product.title }} - {{ image.alt }}" onclick="SingleProdImage(this.src);" />
+      {% endfor %}
+      </div>
+      <script>
+        function SingleProdImage(image_url){
+          document.getElementById('prod-image-cont').src = image_url;
+        }
+      </script>
+    </div>
+    <div class="single-prod-details">
+      <h1 style="margin-top:0px;margin-bottom:12px;">{{ product.title }}</h1>
+      <h2 style="margin-bottom:20px;font-weight: 700;color:CF2E2E;display:flex;align-items:center;">
+        <del class="order-list__line.variant.compare_at_price" style="color:#505050;font-size:16px;">{{ product.compare_at_price | money }}</del>
+        <span style="margin-left: 10px;">{{ product.price | money }}</span>
+        {% if product.compare_at_price_max > product.price %}
+            <span class="single-prod-discount">-{{ product.compare_at_price_max | minus: product.price | times: 100.0 | divided_by: product.compare_at_price_max | money_without_currency | times: 100 | remove: '.0'}}%</span>
+        {% endif %}
+      </h2>
+      
+          {% form 'product', product %}
+          <!-- form content -->
+          <div class="size-quantity-input">
+            <p class="input-label">Variant</p>
+            <select name="id" class="prod-variant">
+          {% for variant in product.variants %}
+            <option value="{{ variant.id }}"
+              {% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}
+            >
+              {{ variant.title }}
+            </option>
+          {% endfor %}
+        </select>
+            <p class="input-label">Quantity</p>
+            <input type="number" name="quantity" min="1" value="1" class="prod-quantity">
+          </div>
+          
+          <div class="flex-div prod-btn-wrapper">
+          <button type="submit" class="prod-btn">Add to cart</button>
+          {{ form | payment_button }}
+          </div>
+        {% endform %}
+          <div>
+            <h2 style="margin-bottom:10px;">Product Details</h2>
+            <div class="prod-details-wrapper">{{ product.description }}</div>
+          </div>
+      </div>
+    </div>
+      <h2 style="text-align:center;">NEWEST PRODUCTS</h2>
+    {% paginate collections['newest-collections'].products by 4 %}
+    <div class="prod-grid" style="margin-bottom:60px;">
+    {% for product in collections['newest-collections'].products %}
+        <div class="prod-item">
+          <div class="prod-image-container">
+              <span class="item-overlay">
+              {% form 'product', product %}
+              <input name="id" type="hidden" value="{{ product.variants[0].id }}">
+              <div class="prod-hover-btn">
+                 <button type="submit" style="cursor:pointer;border:0;padding:0px;width:35px;margin-bottom:12px;"><img src="{{ 'Group 133.png' | asset_url }}" /></button>
+                   <a style="cursor:pointer;" onclick="QuickViewItem('{{ product.id }}')"><img src="{{ 'Group 134.png' | asset_url }}" style="width:35px;" /></a>
+                            </div>
+                            <a href="{{ product.url }}" class="quick-view">SELECT OPTIONS</a>
+                            {% endform %}
+                        </span>
+                        <img src="{{ product.featured_image | image_url }}" class="prod-image" />
+                        {% if product.compare_at_price_max > product.price %}
+                          <span class="prod-discount">-{{ product.compare_at_price_max | minus: product.price | times: 100.0 | divided_by: product.compare_at_price_max | money_without_currency | times: 100 | remove: '.0'}}%</span>
+                        {% endif %}
+                        </div>
+                        <div class="prod-details">
+                          <div class="prod-name-and-desc">
+                            <p class="prod-name"><a href="{{ product.url }}">{{ product.title }}</a></p>
+                            <div class="prod-desc">{{ product.description | truncatewords: 24 }}</div>
+                          </div>
+                          <p class="prod-price">
+                            <del class="order-list__line.variant.compare_at_price" style="color:#505050;font-size:16px;">{{ product.compare_at_price | money }}</del>
+                            {{ product.price | money }}
+                          </p>
+                        </div>
+                    </div>
+                      <div id="{{ product.id | append: 'qvc' }}" class="quick-view-cont">
+                        <div class="container flex-div">
+                          <a onclick="CloseQV('{{ product.id }}');" class="qvc-close-hint">
+            				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                		  </a>
+                          <div class="qv-img-cont" style="width: 100%;">
+                            <h2 style="margin-top:0px;margin-bottom:12px;">{{ product.title }}</h2>
+                            <img id="{{ product.id | append: 'mainqvimg' }}" src="{{ product.featured_image | image_url }}" style="width:100%;aspect-ratio:1/1;object-fit:cover;" />
+                          </div>
+                          <div class="single-prod-details" style="max-width:300px;">
+                            <div class="qv-prod-images">
+                            {% for image in product.images %}
+                              <img src="{{ image.src | img_url: 'original' }}" alt="{{ product.title }} - {{ image.alt }}" onclick="SelectProdImage({{ product.id }}, this.src);" />
+                            {% endfor %}
+                          </div>
+                          </div>
+                        </div>
+                    </div>    
+    {% endfor %}
+    {% render 'popup' %}
+    </div>
+  {% endpaginate %}
+  </div>
+  {% render 'newsletter' %}
+  <script>
+  AddtoCartAjax();
+  </script>

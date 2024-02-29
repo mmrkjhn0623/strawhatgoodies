@@ -1,0 +1,112 @@
+<div class="collection-banner flex-div">
+  <h1>ACCOUNT DETAILS</h1>
+</div>
+<div class="container cart-page" style="margin:60px auto 100px auto;position: relative;padding: 30px;max-width: 980px;border: 1px solid #dedede;">
+  <div id="admin_header" style="padding-bottom:20px;border-bottom:1px solid #d3d3d3;display:flex;justify-content:space-between;align-items:baseline;">
+    <h2 class="title">Order {{ order.name }}</h2>
+    <p id="logout" class="action_link"><a href="/account/" id="customer_logout_link">Return to Account Details</a></p>
+  </div>
+  <div class="account-details flex-div" style="justify-content:start;align-items:start;gap:60px;margin-top:40px;">
+  <div id="address_tables" style="width:50%;"> 
+    {% if order.cancelled %}
+    <div id="order_cancelled" class="flash notice">
+      <p id="order_cancelled_title">Order Cancelled <span class="note">on {{ order.cancelled_at | date: "%B %d, %Y" }}</span></p>
+    </div>
+    {% else %}
+      <div class="note order_date">Placed on {{ order.created_at | date: "%B %d, %Y %I:%M%p" }}</div>
+    {% endif %}
+    <div id="order_address" class="group">
+  <div id="order_payment">
+    <h4 class="order_section_title">Billing Address</h4>
+    <p><span class="note">Payment Status:</span> <span class="status_{{ order.financial_status }}">{{ order.financial_status }}</span></p>
+    <div class="address note">
+      <p>{{ order.billing_address.name }}</p>
+      <p>{{ order.billing_address.company }}</p>
+      <p>{{ order.billing_address.street }}</p>
+      <p>{{ order.billing_address.city }}, {{ order.billing_address.province }}</p>
+      <p>{{ order.billing_address.country }} {{ order.billing_address.zip }}</p>
+      <p>{{ order.billing_address.phone }}</p>
+    </div>
+  </div>
+  {% if order.shipping_address %}
+    <div id="order_shipping">
+      <h4 class="order_section_title">Shipping Address</h4>
+      <p><span class="note">Fulfillment Status:</span> <span class="status_{{ order.fulfillment_status }}">{{ order.fulfillment_status }}</span></p>
+      <div class="address note">
+        <p>{{ order.shipping_address.name }}</p>
+        <p>{{ order.shipping_address.company }}</p>
+        <p>{{ order.shipping_address.street }}</p>
+        <p>{{ order.shipping_address.city }}, {{ order.shipping_address.province }}</p>
+        <p>{{ order.shipping_address.country }} {{ order.shipping_address.zip }}</p>
+        <p>{{ order.shipping_address.phone }}</p>
+      </div>
+    </div>
+  {% endif %}
+</div>
+      
+  </div>
+  <div class="address-form" style="width:100%;">
+  <table id="order_details">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Price</th>
+      <th class="center">Quantity</th>
+      <th class="total">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for line_item in order.line_items %}
+    <tr id="{{ line_item.id }}" class="{% cycle 'odd', 'even' %}">
+      <td class="product orderno">
+        <span class="order-label">Product</span>{{ line_item.title | link_to: line_item.product.url }} 
+      </td>
+      <td class="money"><span class="order-label">Price</span>{{ line_item.price | money }}</td>
+      <td class="quantity cente"><span class="order-label">Quantity</span>{{ line_item.quantity }}</td>
+      <td class="total money"><span class="order-label">Total</span>{{ line_item.quantity | times: line_item.price | money }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot style="margin-top:12px;">
+    <tr class="order_summary note">
+      <td class="label" colspan="2" style="border:0;">&nbsp;</td>
+      <td class="label" style="padding-top:30px;">Subtotal:</td>
+      <td class="total money" style="padding-top:30px;"><span class="order-label">Subtotal</span>{{ order.subtotal_price | money }}</td>
+    </tr>
+
+    {% for discount in order.discounts %}
+      <tr class="order_summary discount">
+        <td class="label" colspan="2" style="border:0;">&nbsp;</td>
+        <td class="label">{{ discount.code }} Discount:</td>
+        <td class="total money"><span class="order-label">Discount</span>{{ discount.savings | money }}</td>
+      </tr>
+    {% endfor %}
+
+    {% for shipping_method in order.shipping_methods %}
+    <tr class="order_summary note">
+      <td class="label" colspan="2" style="border:0;">&nbsp;</td>
+      <td class="label">Shipping ({{ shipping_method.title }}):</td>
+      <td class="total money"><span class="order-label">Shipping</span>{{ shipping_method.price | money }}</td>
+    </tr>
+    {% endfor %}
+
+    {% for tax_line in order.tax_lines %}
+      <tr class="order_summary note">
+        <td class="label" colspan="2" style="border:0;">&nbsp;</td>
+        <td class="label">Tax ({{ tax_line.title }} {{ tax_line.rate | times: 100 }}%):</td>
+        <td class="total money"><span class="order-label">Tax</span>{{ tax_line.price | money }}</td>
+      </tr>
+    {% endfor %}
+
+    <tr class="order_summary order_total">
+      <td class="label" colspan="2" style="border:0;">&nbsp;</td>
+      <td class="label">Total:</td>
+      <td class="total money"><span class="order-label">Total</span>{{ order.total_price | money }}</td>
+    </tr>
+  </tfoot>
+</table>
+    
+  </div>
+</div>
+</div>
+{% render 'newsletter' %}

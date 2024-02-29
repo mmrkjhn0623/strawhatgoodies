@@ -1,0 +1,61 @@
+<div class="collection-banner flex-div">
+  <h1>SEARCH RESULT</h1>
+</div>
+<div class="container search-page" style="margin:60px auto 100px auto;position: relative;">
+
+<div id="searchresults">  
+  
+  {% if search.performed %}
+    
+    {% paginate search.results by 20 %}  
+  
+    {% if search.results == empty %}  
+      <h3 style="font-weight:700;"></h3>  
+      <div class="cart-empty-message flex-div" style="text-align:center;height:30vh;flex-direction:column;justify-content:start;">
+        <h1 style="margin-bottom:20px;">No Results Found</h1>
+        <p>Your search for <b>{{search.terms | escape}}</b> did not yield any results</p>
+      </div>
+    {% else %} 
+      <div class="product-filter flex-div" style="padding-bottom:10px;">
+          <p style="margin-bottom:0px;font-size:20px;">Search Result for <b>{{search.terms | escape}}</b>.</p>
+        </div>
+      <div id="search-item" class="prod-list">
+        {% for item in search.results %}
+          {% if item.object_type == 'product' %}
+          <div class="prod-item">
+              <div class="prod-image-container">
+                {% if item.featured_image %}
+                  <img src="{{ item.featured_image | image_url }}" class="prod-image" />
+                {% elsif item.image %}
+                  <img src="{{ item.image | image_url }}" class="prod-image" />
+                {% endif %}
+              </div>
+              <div class="prod-details">
+                <div class="prod-name-and-desc">
+                  <p class="prod-name"><a href="{{ item.url }}">{{ item.title }}</a></p>
+                  <div class="prod-desc">{{ item.content | strip_html | truncatewords: 40 | highlight: search.terms }}</div>
+                </div>
+                <p class="prod-price" style="margin-top:20px;">{{ item.price | money_with_currency }}</p>
+              </div>
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>    
+
+    {% endif %}
+    
+    
+    <p>{{ paginate | default_pagination }}</p>
+    
+    {% endpaginate %}    
+    
+  {% endif %}
+  
+  
+  
+
+</div>
+  
+</div>
+{% render 'newsletter' %}
+

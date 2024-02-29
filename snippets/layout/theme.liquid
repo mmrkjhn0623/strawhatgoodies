@@ -1,0 +1,18 @@
+<html>
+    <head>
+        {{ content_for_header }}
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Straw Hat Goodies</title>
+        <link rel="icon" href="{{ 'Group.png' | asset_url }}" type="image/x-icon">
+        {{ 'style.css' | asset_url | stylesheet_tag }}
+        {{ 'script.js' | asset_url | script_tag }}
+    </head>
+    <body>
+        {% render 'header' %}
+        <main>
+          {{ content_for_layout }}
+        </main>
+        {% render 'footer' %}
+    </body>
+</html>

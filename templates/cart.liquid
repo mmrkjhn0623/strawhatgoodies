@@ -1,0 +1,141 @@
+<div class="collection-banner flex-div">
+  <h1>CART</h1>
+</div>
+<div class="container cart-page" style="margin:60px auto 100px auto;position: relative;">
+  {% if cart.item_count == 0 %}
+  <div class="cart-empty-message flex-div" style="text-align:center;height:30vh;flex-direction:column;justify-content:start;">
+    <h1 style="margin-bottom:20px;">Your cart is empty.</h1>
+    <p>Why not browse our <a href="/collections/all" style="color:#cf2e2e;font-weight:700;">collections</a> and find something you love?</p>
+  </div>
+{% else %}
+  <!-- Display the cart items and checkout button -->
+<form action="{{ routes.cart_url }}" method="post">
+<table class="cart-items">
+  <tr>
+    <th><span class="th-prod">Product</span></th>
+    <th>Variant</th>
+    <th>Quantity</th>
+    <th style="width:100px;text-align:center;">Subtotal</th>
+  </tr>
+   {% for item in cart.items %}
+  <!-- line item info -->
+
+  {% unless item.properties == empty %}
+    {% for property in item.properties %}
+      {{ property.first }}:
+
+      {% if property.last contains '/uploads/' %}
+        <a href="{{ property.last }}">{{ property.last | split: '/' | last }}</a>
+      {% else %}
+        {{ property.last }}
+      {% endif %}
+    {% endfor %}
+  {% endunless %}
+  <tr>
+    <td style="position:relative;">
+      <div class="cart-prod">
+        <a class="removetocart" href="{{ item.url_to_remove }}">
+        <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+          <path d='M10 14L12 12M12 12L14 10M12 12L10 10M12 12L14 14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z' stroke='#4A5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>
+          </path>
+        </svg></a>
+        <img src="{{ item.image | image_url }}"/>
+        <div class="cart-prod-details">
+          <div class="cart-label-mobile">
+            <p><b>Product:</b></p>
+          </div>
+          <div>
+            <p>{{ item.product.title }}</p>
+            <p style="height:22px;">{{ item.price | money }}</p>
+          </div>
+      </div>
+    </td>
+    <td><span class="cart-label-mobile"><b>Variant:</b></span><p>{{ item.variant.title }}</p></td>
+    <td class="quantity">
+      <span class="cart-label-mobile"><b>Quantity:</b></span>
+      <div class="quantity-controls" data-stock-count="5" data-inventory-policy="deny" data-inventory-management="shopify">
+		 <button type="button" class="qty-minus alt-focus" onclick="CartItemQuantityMinus({{ item.id }}, {{ item.price | money_without_currency }})" aria-label="Reduce item quantity by one" fdprocessedid="bj20s">-</button>
+		 <input id="quantity_{{ item.id }}" class="number quantity-selector" value="{{ item.quantity }}" aria-label="Quantity" name="updates[]" type="number" min="1" size="4" readonly />
+		 <button type="button" class="qty-plus alt-focus" onclick="CartItemQuantityPlus({{ item.id }}, {{ item.price | money_without_currency }})" aria-label="Increase item quantity by one" fdprocessedid="52qm3t">+</button>
+         <input type="hidden" id="totalquantity_{{ item.id }}" value="{{ item.variant.inventory_quantity }}" />
+      </div>
+    </td>
+    <td style="text-align:end;"><span class="cart-label-mobile"><b>Subtotal:</b></span><p id="subtotal_{{ item.id }}">{{ item.final_line_price | money }}</p></td>
+  </tr>
+  
+{% endfor %}
+</table>
+
+   {% for item in cart.items %}
+  <!-- line item info -->
+
+  {% unless item.properties == empty %}
+    {% for property in item.properties %}
+      {{ property.first }}:
+
+      {% if property.last contains '/uploads/' %}
+        <a href="{{ property.last }}">{{ property.last | split: '/' | last }}</a>
+      {% else %}
+        {{ property.last }}
+      {% endif %}
+    {% endfor %}
+  {% endunless %}
+  
+{% endfor %}
+
+<div style="display:flex;justify-content:end;">
+<input type="submit" value="Update cart" id="update-cart" class="cart-update-btn" disabled>
+</div>
+<div class="checkout-table">
+  <table>
+  <tr>
+    <th><h2>Cart Total</h2></th>
+  </tr>
+  <tr>
+    <td><h3><span class="sub">Subtotal:</span><span class="sub-amount">{{ cart.items_subtotal_price | money }}</span></h3></td>
+  </tr>
+  <tr>
+    <td><h3><span class="sub">Total:</span><span class="sub-amount">{{ cart.total_price | money }}</span></h3></td>
+  </tr>
+  <tr>
+    <td><input type="submit" class="cart-checkout-btn" name="checkout" value="Checkout"></td>
+  </tr>
+  </table>
+</div>
+</form>
+{% endif %}
+ {% render 'popup' %}
+</div>
+{% render 'newsletter' %}
+<script>
+  function CartItemQuantityMinus(item_id, price){
+    if(document.getElementById('quantity_' + item_id).value <= 1){
+      event.preventDefault();
+      PopupMessage('Product quantity cannot be 0.');
+    }
+    else{
+      document.getElementById('quantity_' + item_id).value = document.getElementById('quantity_' + item_id).value - 1;
+      document.getElementById('update-cart').removeAttribute("disabled");
+      document.getElementById('update-cart').classList.add('active');
+      
+      /* var subtotal = parseInt(document.getElementById('quantity_' + item_id).value) * parseFloat(price);
+      document.getElementById('subtotal_' + item_id).innerHTML = '₱' + subtotal.toLocaleString('en-US', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    */
+    }
+  }
+  
+  function CartItemQuantityPlus(item_id, price){
+    /* if(parseInt(document.getElementById('quantity_' + item_id).value) < parseInt(document.getElementById('totalquantity_' + item_id).value)){
+      document.getElementById('quantity_' + item_id).value = parseInt(document.getElementById('quantity_' + item_id).value) + 1;
+      document.getElementById('update-cart').removeAttribute("disabled");
+      document.getElementById('update-cart').classList.add('active');
+    }
+    else{
+      event.preventDefault();
+      PopupMessage('Product is out of stock.');
+    } */
+    document.getElementById('quantity_' + item_id).value = parseInt(document.getElementById('quantity_' + item_id).value) + 1;
+    document.getElementById('update-cart').removeAttribute("disabled");
+    document.getElementById('update-cart').classList.add('active');
+  }
+</script>
